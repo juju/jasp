@@ -1,0 +1,13 @@
+site_name: JASP Docs
+site_description: Documentation of the Juju Application Security Protocol (JASP)
+copyright: Copyright &copy; 2014, JASP Working Group
+docs_dir: sources
+repo_url: https://github.com/juju/jasp.git
+theme: readthedocs
+include_search: true
+
+pages:
+
+# Home Page
+- ['index.md', 'Home']
+
