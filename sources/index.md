@@ -1,5 +1,6 @@
 # Ubuntu Juju Application Security Protocol (JASP) Relationship Overview
 
+![JASP Stack Overview Diagram](https://raw.githubusercontent.com/juju/jasp/master/img/jasp_stack_diagram.png =600x)
 
 In the above diagram:
 
