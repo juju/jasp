@@ -1,59 +1,133 @@
-# Est simul carebat
+# Ubuntu Juju Application Security Protocol (JASP) Relationship Overview
 
-## Dederat ire more iugis et quare campos
 
-Lorem markdownum pudorque est, alii quoque mora abest tuearis speciem modo
-annisque ire ardor ruunt? Premeret quam quot, hoc mea distentae pari: taurum et
-auceps memorque imagine cum laudata Boreas demissaque manus. Parnasi variat
-insequitur Phoebe, enim ingens hunc fabula, dicere est. Purum incidere non, puto
-Phoebus; nec suo proxima satis. Requiritur galeaque auro, exstinctum parvum
-minabitur satis liquidumque Mycenae tamen arce ligat.
+In the above diagram:
 
-    spoofing_rootkit(dvi);
-    rom_user_manet = parity * pop;
-    var flash = model_title_cpa(376031);
+*  **Fuscia** [SCIM](http://simplecloud.info) interface or component
 
-## Stellarum vulnera domus threicius ut nefas contudit
+*  **Green** [UMA](http://tinyurl.com/umav1) interface or component
 
-Ministros omnibus! Et essem montibus vestram languescuntque Cleonae secundo et
-**frigoris liberat**, et, eductum adhibent, plangere scopulus subit lacus. Tamen
-insano et meorum ultimus Aeeta moenia dumque quamvis fuit! Cum fugis deieci
-*finemque secundum* utiliter; est quoque nomen latumque et leones horridus; tum.
-Magna Phlegethontide quorum puerilibus Phoce: vel tibi nostrum fera, futuri sed
-**auras nisi protinus**, et?
+*  **Red** web application, native application, or headless API server
 
-*Et* fulvae imagine Iovemque aciem cinctaque enim, denupsit contraria faciem
-damnatque. Querellas misso tacti, At movere sonantia locuti natus, *Echo*: longo
-Titan hoc Nileus et.
+*  **Blue** [OpenID Connect](http://openid.net/connect/) interface or component
 
-## Et iam hos idcirco quod nostro Siqua
+*  **Grey** Out of scope for JASP
 
-Abire discedite frondibus partu, oblitus, sine fore imitator. **Tantum** aut?
-Suis haec spiritus recludi totidemque, tu e imagine Veneris est Ditem nec
-abesse, ait est! Candor nusquam. Tollens murmure est munus Phorbas praelata,
-quae est morsus medio omnia famuli potiere, et fetum venit.
+## Relationship from OpenID Connect Relying Party (RP) to OpenID Provider (OP)
 
-Mali novis adesset omnis. Lucifer paludibus piscibus urbis; vel illa ignorans et
-per crimine undis orant cornibus. Et nam obliquo verba dixit, doluit cognataque
-veneno accenseor cecidisse latis ipsa viri.
+OpenID Connect defines HTTPS APIs that enable a website or mobile application--a "Relying Party" or RP--to identify a person in their home domain. It's like Google or Yahoo authentication for any domain on the Internet that hosts a compliant OpenID Provider (which is no more complex than DNS or email).
 
-## Gerebat iuvenalis fruge per patrumque vina periclis
+The RP can expect the OP of any compliant Internet domain to provide all the things required by the [OpenID Connect standard](http://openid.net/connect). The exact OpenID Connect endpoints, supported crypto and other operational information will be published by the OP at ''.well-known/openid-configuration''
 
-Frequentes attulerat *fronde*. Deme mihi meique, ille est in cura pererrat,
-[Phoebo passu ora](http://reddit.com/r/thathappened) dies. Dicuntur dixit,
-pietate, **luctantemque Iove amores** est. Eram silvas euntis, inde, et
-robustior fuit: *fluens*. Similis lignum in frondibus locuta semimari.
+The RP may register a callback to receive a notification of a user logout event. This notification is not guaranteed to be delivered to an RP.
 
-## Nostra manes se pars ab tanto tabellae
+Relationship Name: openid-connect
 
-Fixo hoc et **et premunt**, est maculatum Aello. Ova recepi rapto, pectore haec
-mihi pectora, est tutos facere? Rogum plumbea expers iactanti metas pressistis
-Belides plura: prius temperius irata erat nostrum negatur.
+Relationship Direction:
 
-Leni vitiumque tremuisse oculis positamque quid! Porrigit cesserunt creatus
-pulsa includere exsanguemque apros [vetustas](http://www.reddit.com/r/haskell)
-caloris. Retinens diris moriens semper cavernis vastat, effugiam quattuor
-commisisse ostendens.
+      * From RP --> OP
 
-[Phoebo passu ora]: http://reddit.com/r/thathappened
-[vetustas]: http://www.reddit.com/r/haskell
+Interface: [OpenID Connect](http://openid.net/connect)
+
+Token: Access Token required to obtain id_token from userinfo endpoint
+
+RP Sets:
+
+      * **connect_discovery_url**  - Should be relied on exclusively **//''REQUIRED''//**
+      * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
+      * **connect_logout_url_callback** Best efforts notification, probably from the person's browser. You may not get this, but its greener if you do.
+      *     **op_host** Either the domain or hostname of the OP
+      *     **op_port** HTTPS port : usually 443
+      *     **client_id** Explicitly set the client_id
+      *     **client_secret**  Explicitly set the client_secret
+      *     **client_jks_keystore** Should contain the certificates and private key for the RP.
+      *     **client_jks_truststore** May contain additional CA's to enable crypto verification.
+      *     See [OpenID Connect Discovery Response](http://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfigurationResponse)
+
+##  Relationship from SCIM Client to Server
+
+[SCIM](http://simplecloud.info) provides a standard that reduces the number of interfaces developers need to learn for user, group and device CRUD.
+
+Relationship Direction:
+
+      * From SCIM Client (or IDM) --> Persistence Layer Supporting OAuth2 services
+
+
+Interface: Not Specified (could be LDAP, RDBMS, or any other persistence technology)
+
+Token: Client must register SCIM endpoints, and enforce authorized UMA RPT token: same as RS -> AS
+
+RP Sets:
+
+      *     uma_discovery_url **//''REQUIRED''//**
+      * scim_discovery_url - where to find the SCIM endpoints, required cryto, and required UMA authorization scopes **//''Required''//**
+      *     connect_discovery_url **//''REQUIRED''//**
+      * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
+
+
+While dynamic registration can be very efficient, some applications need to add an account before ther person actually logs in. For example, your account needs to be created in a payroll system before you can be paid, email accounts need to be created in advance, etc. The Access Management system fits into this category--it needs to be kept up-to-date with the latest identities, user claims and credentials.
+
+A JASP complain SCIM service should support Web Finger discovery, and return a ''json'' object for  ''./well-known/scim-configuration'' The returned json discovery object should contain the endpoints, and required authorization servers and UMA scopes required for access.
+
+
+##  Relationship from UMA Resource Server (RS) to UMA Authorization Server (AS)
+
+A Resource Server must:
+
+      * register all resources that are under protection with the Authorization Server
+      * forbid access to resources if RPT doesn't have enough permissions and provide permission ticket to RP (so RP can authorize RPT with necessary permissions)
+
+Relationship Direction:
+
+      * From RS --> AS
+
+Interface: [UMA](http://tinyurl.com/umav1)
+
+Token: RS must present PAT token to  register resources as well as verify the permissions
+in the RPT token presented by the Client.
+
+RP Sets:
+
+      *     uma_discovery_url **//''REQUIRED''//**
+      *     connect_discovery_url **//''REQUIRED''//**
+      * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
+
+
+##  Relationship from UMA Client to UMA Resource Server (RS)
+
+An UMA Client is a Web application or native application that requests an HTTP resource (i.e. an API or binary) from an UMA Resource Server. UMA clients can be registered and managed using the OpenID Connect client registration API. The client must use  UMA discovery published at ''.well-known/uma-configuration'' in order to obtain the required tokens to access an UMA protected resource.
+
+Relationship Direction:
+
+      * From Client --> RS
+
+Interface: [UMA](http://tinyurl.com/umav1)
+
+Token: Client must present an authorized RPT token to the RS
+
+RP Sets:
+
+      *     uma_discovery_url **//''REQUIRED''//**
+      *     connect_discovery_url **//''REQUIRED''//**
+      * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
+
+
+##  Relationship from UMA Client to UMA Authorization Server (AS)
+
+An UMA Client is a Web application or native application that requests an HTTP resource (i.e. an API or binary) from an UMA Resource Server. UMA clients can be registered and managed using the OpenID Connect client registration API. The client must use  UMA discovery published at ''.well-known/uma-configuration'' in order to obtain the required tokens to access an UMA protected resource.
+
+Relationship Direction:
+
+      * From Client --> AS
+
+Interface: [UMA](http://tinyurl.com/umav1)
+
+Token: Client must present AAT token to communicate with AS (obtain RPT, authorize RPT)
+
+RP Sets:
+
+      *     uma_discovery_url **//''REQUIRED''//**
+      *     connect_discovery_url **//''REQUIRED''//**
+      * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
+
+
