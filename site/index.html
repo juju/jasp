@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Documentation of the Juju Application Security Protocol (JASP)">
+        
+        
+        <link rel="shortcut icon" href="./img/favicon.ico">
+
+        <title>JASP Docs</title>
+
+        <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="./css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="./css/prettify-1.0.css" rel="stylesheet">
+        <link href="./css/base.css" rel="stylesheet">
+        
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body class="homepage">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href=".">JASP Docs</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+
+            
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+                <li>
+                    <a href="#searchModal" data-toggle="modal"><i class="fa fa-search"></i> Search</a>
+                </li>
+                
+                
+                
+                <li>
+                    <a href="https://github.com/juju/jasp.git">
+                        
+                            <i class="fa fa-github"></i>
+                        
+                        GitHub
+                    </a>
+                </li>
+                
+            </ul>
+            
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#ubuntu-juju-application-security-protocol-jasp-relationship-overview">Ubuntu Juju Application Security Protocol (JASP) Relationship Overview</a></li>
+        
+            <li><a href="#relationship-from-openid-connect-relying-party-rp-to-openid-provider-op">Relationship from OpenID Connect Relying Party (RP) to OpenID Provider (OP)</a></li>
+        
+            <li><a href="#relationship-from-scim-client-to-server">Relationship from SCIM Client to Server</a></li>
+        
+            <li><a href="#relationship-from-uma-resource-server-rs-to-uma-authorization-server-as">Relationship from UMA Resource Server (RS) to UMA Authorization Server (AS)</a></li>
+        
+            <li><a href="#relationship-from-uma-client-to-uma-resource-server-rs">Relationship from UMA Client to UMA Resource Server (RS)</a></li>
+        
+            <li><a href="#relationship-from-uma-client-to-uma-authorization-server-as">Relationship from UMA Client to UMA Authorization Server (AS)</a></li>
+        
+    
+    </ul>
+</div></div>
+            <div class="col-md-9" role="main">
+
+<h1 id="ubuntu-juju-application-security-protocol-jasp-relationship-overview">Ubuntu Juju Application Security Protocol (JASP) Relationship Overview</h1>
+<p><img alt="JASP Stack Overview Diagram" src="https://raw.githubusercontent.com/juju/jasp/master/img/jasp_stack_diagram.png" title="=600x" /></p>
+<p>In the above diagram:</p>
+<ul>
+<li>
+<p><strong>Fuscia</strong> <a href="http://simplecloud.info">SCIM</a> interface or component</p>
+</li>
+<li>
+<p><strong>Green</strong> <a href="http://tinyurl.com/umav1">UMA</a> interface or component</p>
+</li>
+<li>
+<p><strong>Red</strong> web application, native application, or headless API server</p>
+</li>
+<li>
+<p><strong>Blue</strong> <a href="http://openid.net/connect/">OpenID Connect</a> interface or component</p>
+</li>
+<li>
+<p><strong>Grey</strong> Out of scope for JASP</p>
+</li>
+</ul>
+<h2 id="relationship-from-openid-connect-relying-party-rp-to-openid-provider-op">Relationship from OpenID Connect Relying Party (RP) to OpenID Provider (OP)</h2>
+<p>OpenID Connect defines HTTPS APIs that enable a website or mobile application--a "Relying Party" or RP--to identify a person in their home domain. It's like Google or Yahoo authentication for any domain on the Internet that hosts a compliant OpenID Provider (which is no more complex than DNS or email).</p>
+<p>The RP can expect the OP of any compliant Internet domain to provide all the things required by the <a href="http://openid.net/connect">OpenID Connect standard</a>. The exact OpenID Connect endpoints, supported crypto and other operational information will be published by the OP at ''.well-known/openid-configuration''</p>
+<p>The RP may register a callback to receive a notification of a user logout event. This notification is not guaranteed to be delivered to an RP.</p>
+<p>Relationship Name: openid-connect</p>
+<p>Relationship Direction:</p>
+<pre class="prettyprint well"><code>  * From RP --&gt; OP
+</code></pre>
+<p>Interface: <a href="http://openid.net/connect">OpenID Connect</a></p>
+<p>Token: Access Token required to obtain id_token from userinfo endpoint</p>
+<p>RP Sets:</p>
+<pre class="prettyprint well"><code>  * **connect_discovery_url**  - Should be relied on exclusively **//''REQUIRED''//**
+  * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
+  * **connect_logout_url_callback** Best efforts notification, probably from the person's browser. You may not get this, but its greener if you do.
+  *     **op_host** Either the domain or hostname of the OP
+  *     **op_port** HTTPS port : usually 443
+  *     **client_id** Explicitly set the client_id
+  *     **client_secret**  Explicitly set the client_secret
+  *     **client_jks_keystore** Should contain the certificates and private key for the RP.
+  *     **client_jks_truststore** May contain additional CA's to enable crypto verification.
+  *     See [OpenID Connect Discovery Response](http://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfigurationResponse)
+</code></pre>
+<h2 id="relationship-from-scim-client-to-server">Relationship from SCIM Client to Server</h2>
+<p><a href="http://simplecloud.info">SCIM</a> provides a standard that reduces the number of interfaces developers need to learn for user, group and device CRUD.</p>
+<p>Relationship Direction:</p>
+<pre class="prettyprint well"><code>  * From SCIM Client (or IDM) --&gt; Persistence Layer Supporting OAuth2 services
+</code></pre>
+<p>Interface: Not Specified (could be LDAP, RDBMS, or any other persistence technology)</p>
+<p>Token: Client must register SCIM endpoints, and enforce authorized UMA RPT token: same as RS -&gt; AS</p>
+<p>RP Sets:</p>
+<pre class="prettyprint well"><code>  *     uma_discovery_url **//''REQUIRED''//**
+  * scim_discovery_url - where to find the SCIM endpoints, required cryto, and required UMA authorization scopes **//''Required''//**
+  *     connect_discovery_url **//''REQUIRED''//**
+  * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
+</code></pre>
+<p>While dynamic registration can be very efficient, some applications need to add an account before ther person actually logs in. For example, your account needs to be created in a payroll system before you can be paid, email accounts need to be created in advance, etc. The Access Management system fits into this category--it needs to be kept up-to-date with the latest identities, user claims and credentials.</p>
+<p>A JASP complain SCIM service should support Web Finger discovery, and return a ''json'' object for  ''./well-known/scim-configuration'' The returned json discovery object should contain the endpoints, and required authorization servers and UMA scopes required for access.</p>
+<h2 id="relationship-from-uma-resource-server-rs-to-uma-authorization-server-as">Relationship from UMA Resource Server (RS) to UMA Authorization Server (AS)</h2>
+<p>A Resource Server must:</p>
+<pre class="prettyprint well"><code>  * register all resources that are under protection with the Authorization Server
+  * forbid access to resources if RPT doesn't have enough permissions and provide permission ticket to RP (so RP can authorize RPT with necessary permissions)
+</code></pre>
+<p>Relationship Direction:</p>
+<pre class="prettyprint well"><code>  * From RS --&gt; AS
+</code></pre>
+<p>Interface: <a href="http://tinyurl.com/umav1">UMA</a></p>
+<p>Token: RS must present PAT token to  register resources as well as verify the permissions
+in the RPT token presented by the Client.</p>
+<p>RP Sets:</p>
+<pre class="prettyprint well"><code>  *     uma_discovery_url **//''REQUIRED''//**
+  *     connect_discovery_url **//''REQUIRED''//**
+  * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
+</code></pre>
+<h2 id="relationship-from-uma-client-to-uma-resource-server-rs">Relationship from UMA Client to UMA Resource Server (RS)</h2>
+<p>An UMA Client is a Web application or native application that requests an HTTP resource (i.e. an API or binary) from an UMA Resource Server. UMA clients can be registered and managed using the OpenID Connect client registration API. The client must use  UMA discovery published at ''.well-known/uma-configuration'' in order to obtain the required tokens to access an UMA protected resource.</p>
+<p>Relationship Direction:</p>
+<pre class="prettyprint well"><code>  * From Client --&gt; RS
+</code></pre>
+<p>Interface: <a href="http://tinyurl.com/umav1">UMA</a></p>
+<p>Token: Client must present an authorized RPT token to the RS</p>
+<p>RP Sets:</p>
+<pre class="prettyprint well"><code>  *     uma_discovery_url **//''REQUIRED''//**
+  *     connect_discovery_url **//''REQUIRED''//**
+  * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
+</code></pre>
+<h2 id="relationship-from-uma-client-to-uma-authorization-server-as">Relationship from UMA Client to UMA Authorization Server (AS)</h2>
+<p>An UMA Client is a Web application or native application that requests an HTTP resource (i.e. an API or binary) from an UMA Resource Server. UMA clients can be registered and managed using the OpenID Connect client registration API. The client must use  UMA discovery published at ''.well-known/uma-configuration'' in order to obtain the required tokens to access an UMA protected resource.</p>
+<p>Relationship Direction:</p>
+<pre class="prettyprint well"><code>  * From Client --&gt; AS
+</code></pre>
+<p>Interface: <a href="http://tinyurl.com/umav1">UMA</a></p>
+<p>Token: Client must present AAT token to communicate with AS (obtain RPT, authorize RPT)</p>
+<p>RP Sets:</p>
+<pre class="prettyprint well"><code>  *     uma_discovery_url **//''REQUIRED''//**
+  *     connect_discovery_url **//''REQUIRED''//**
+  * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
+</code></pre>
+</div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Copyright &copy; 2014, JASP Working Group</p>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <!-- Search modal.  Not yet supported. -->
+<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="searchModalLabel">Documentation search</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="./js/bootstrap-3.0.3.min.js"></script>
+        <script src="./js/prettify-1.0.min.js"></script>
+        <script src="./js/base.js"></script>
+        
+    </body>
+</html>
