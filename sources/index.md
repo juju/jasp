@@ -4,13 +4,13 @@
 
 In the above diagram:
 
-*  **Fuscia** [SCIM](http://simplecloud.info) interface or component
+*  **Blue** [OpenID Connect](http://openid.net/connect/) interface or component
 
 *  **Green** [UMA](http://tinyurl.com/umav1) interface or component
 
-*  **Red** web application, native application, or headless API server
+*  **Fuscia** [SCIM](http://simplecloud.info) interface or component
 
-*  **Blue** [OpenID Connect](http://openid.net/connect/) interface or component
+*  **Red** web application, native application, or headless API server
 
 *  **Grey** Out of scope for JASP
 
@@ -28,22 +28,25 @@ Relationship Direction:
 
       * From RP --> OP
 
-Interface: [OpenID Connect](http://openid.net/connect)
+Interface: 
+[OpenID Connect](http://openid.net/connect)
 
-Token: Access Token required to obtain id_token from userinfo endpoint
+Easiest Workflow:
+      1. RP sends discovery to https://<host>/.well-known/openid-configuration
+      2. RP sends client registration request : receives response with clientid - stores this json for later.
+         Client Registration request must include redirect-uri and client name.
+      3. RP sends the person for authentication / authorization
+      4. RP gets access token
+      5. RP sends access token to request id_token with user claims. Only present user claims is `sub`
+         as `openid` is the only scope required in OpenID Connect for a dynamically registered client.
 
-RP Sets:
+Minimum Required:
+      * ** JASP_OPENID_RP_REDIRECT_URI **
+      * ** JASP_OPENID_RP_CLIENT_NAME **      
 
-      * **connect_discovery_url**  - Should be relied on exclusively **//''REQUIRED''//**
-      * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
-      * **connect_logout_url_callback** Best efforts notification, probably from the person's browser. You may not get this, but its greener if you do.
-      *     **op_host** Either the domain or hostname of the OP
-      *     **op_port** HTTPS port : usually 443
-      *     **client_id** Explicitly set the client_id
-      *     **client_secret**  Explicitly set the client_secret
-      *     **client_jks_keystore** Should contain the certificates and private key for the RP.
-      *     **client_jks_truststore** May contain additional CA's to enable crypto verification.
-      *     See [OpenID Connect Discovery Response](http://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfigurationResponse)
+Optional Required:
+      * ** JASP_REQUESTED_SCOPES ** 
+      * ** REQUESTED_ACR **
 
 ##  Relationship from SCIM Client to Server
 
