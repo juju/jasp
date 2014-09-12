@@ -28,8 +28,12 @@ Relationship Direction:
 
       * From RP --> OP
 
-Interface: 
-[OpenID Connect](http://openid.net/connect)
+Charm Interface Name: 
+
+      * OPENID_CONNECT
+
+Authn Standard:     
+    [OpenID Connect](http://openid.net/connect)
 
 Easiest Workflow:
       1. RP sends discovery to https://<host>/.well-known/openid-configuration
