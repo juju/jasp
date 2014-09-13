@@ -4,53 +4,70 @@
 
 In the above diagram:
 
-*  **Blue** [OpenID Connect](http://openid.net/connect/) interface or component
+ *  **Blue** [OpenID Connect](http://openid.net/connect/) interface or component
 
-*  **Green** [UMA](http://tinyurl.com/umav1) interface or component
+ *  **Green** [UMA](http://tinyurl.com/umav1) interface or component
 
-*  **Fuscia** [SCIM](http://simplecloud.info) interface or component
+ *  **Fuscia** [SCIM](http://simplecloud.info) interface or component
 
-*  **Red** web application, native application, or headless API server
+ *  **Red** web application, native application, or headless API server
 
-*  **Grey** Out of scope for JASP
+ *  **Grey** Out of scope for JASP
 
 ## Relationship from OpenID Connect Relying Party (RP) to OpenID Provider (OP)
 
-OpenID Connect defines HTTPS APIs that enable a website or mobile application--a "Relying Party" or RP--to identify a person in their home domain. It's like Google or Yahoo authentication for any domain on the Internet that hosts a compliant OpenID Provider (which is no more complex than DNS or email).
+An OpenID Connect Relying Party, or RP, calls the APIs of the OpenID Provider to identify a 
+person at their home domain.  [OpenID Connect API](http://openid.net/connect) is a profile 
+of OAuth2 which defines APIs for authentication, discovery, client registration and session 
+management. 
 
-The RP can expect the OP of any compliant Internet domain to provide all the things required by the [OpenID Connect standard](http://openid.net/connect). The exact OpenID Connect endpoints, supported crypto and other operational information will be published by the OP at ''.well-known/openid-configuration''
+Relationship Name: 
 
-The RP may register a callback to receive a notification of a user logout event. This notification is not guaranteed to be delivered to an RP.
-
-Relationship Name: openid-connect
+    *  OPENID-CONNECT
 
 Relationship Direction:
 
-      * From RP --> OP
+    *  From RP to OP
 
-Charm Interface Name: 
+Overview:
 
-      * OPENID_CONNECT
+ 1. RP sends discovery to https://host/.well-known/openid-configuration
+       See [OpenID Connect Client Registration API](http://openid.net/specs/openid-connect-discovery-1_0.html)
 
-Authn Standard:     
-    [OpenID Connect](http://openid.net/connect)
+ 2. RP sends client registration request: receives response with clientID 
+       and other registration details, application should stores this json 
+       for later. Client Registration request must include redirect-uri and 
+       client name. See [OpenID Connect Dynamic Registration API](http://openid.net/specs/openid-connect-registration-1_0.html)
 
-Easiest Workflow:
- 1. RP sends discovery to https://<host>/.well-known/openid-configuration
- 2. RP sends client registration request : receives response with clientid - stores this json for later. Client 
-    Registration request must include redirect-uri and client name.
- 3. RP sends the person for authentication / authorization
+ 3. RP re-directs the person for authentication / authorization (note if client
+       is already registered, it would start here). See [OpenID Connect Core API](http://openid.net/specs/openid-connect-core-1_0.html)
+
  4. RP gets access token
- 5. RP sends access token to request id_token with user claims. Only present user claims is `sub`
-    as `openid` is the only scope required in OpenID Connect for a dynamically registered client.
 
-Minimum Required:
-      * ** JASP_OPENID_RP_REDIRECT_URI **
-      * ** JASP_OPENID_RP_CLIENT_NAME **      
+ 5. RP sends access token to request id_token with user claims. Only present user 
+       claims is `sub` as `openid` is the only scope required in OpenID Connect for 
+       a dynamically registered client.
 
-Optional Required:
-      * ** JASP_REQUESTED_SCOPES ** 
-      * ** REQUESTED_ACR **
+Minimum Required
+
+
+ * **JASP_OPENID_RP_REDIRECT_URI** The callback URI for your application, this is where
+   the OpenID Connect Provider will send the access token and `id_token`. Even if a client
+   can spoof a request, the response from the OP always goes back to the pre-registered
+   callback redirect URI.
+
+ * **JASP_OPENID_RP_CLIENT_NAME** This is a more friendly name for your application that 
+    would make it easier for the admin at the OP to recognize your application. 
+
+Optional Required
+
+ * **JASP_OPENID_REQUESTED_SCOPES** OpenID Connect scopes provide one or more user claims. 
+   Many applications will not work with the username alone (the `sub` claim). The RP can
+   use this property to specify additional required scopes.
+
+ * **JASP_OPENID_REQUESTED_ACR** An OpenID Connect RP may request a specific type of authentication
+   using the `acr_values` parameter. See the [Authentication Request](http://openid.net/specs/openid-connect-core-1_0.html#AuthRequest) for more details.
+
 
 ##  Relationship from SCIM Client to Server
 
