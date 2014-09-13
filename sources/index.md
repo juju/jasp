@@ -36,13 +36,13 @@ Authn Standard:
     [OpenID Connect](http://openid.net/connect)
 
 Easiest Workflow:
-      1. RP sends discovery to https://<host>/.well-known/openid-configuration
-      2. RP sends client registration request : receives response with clientid - stores this json for later.
-         Client Registration request must include redirect-uri and client name.
-      3. RP sends the person for authentication / authorization
-      4. RP gets access token
-      5. RP sends access token to request id_token with user claims. Only present user claims is `sub`
-         as `openid` is the only scope required in OpenID Connect for a dynamically registered client.
+ 1. RP sends discovery to https://<host>/.well-known/openid-configuration
+ 2. RP sends client registration request : receives response with clientid - stores this json for later. Client 
+    Registration request must include redirect-uri and client name.
+ 3. RP sends the person for authentication / authorization
+ 4. RP gets access token
+ 5. RP sends access token to request id_token with user claims. Only present user claims is `sub`
+    as `openid` is the only scope required in OpenID Connect for a dynamically registered client.
 
 Minimum Required:
       * ** JASP_OPENID_RP_REDIRECT_URI **
