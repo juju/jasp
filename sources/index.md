@@ -29,17 +29,20 @@ Relationship Direction:
 
     *  From RP to OP
 
-Overview:
+Overview of Web Browser Authentication:
+
+ 0. Person hits login button on Website which is the "RP" (Relying Party).
 
  1. RP sends discovery to https://host/.well-known/openid-configuration
        See [OpenID Connect Client Registration API](http://openid.net/specs/openid-connect-discovery-1_0.html)
 
  2. RP sends client registration request: receives response with clientID 
-       and other registration details, application should stores this json 
+       and other registration details. Application should stores this json 
        for later. Client Registration request must include redirect-uri and 
-       client name. See [OpenID Connect Dynamic Registration API](http://openid.net/specs/openid-connect-registration-1_0.html)
+       client name. See 
+       [OpenID Connect Dynamic Registration API](http://openid.net/specs/openid-connect-registration-1_0.html)
 
- 3. RP re-directs the person for authentication / authorization (note if client
+ 3. RP re-directs Person for authentication / authorization (note if client
        is already registered, it would start here). See [OpenID Connect Core API](http://openid.net/specs/openid-connect-core-1_0.html)
 
  4. RP gets access token
@@ -48,8 +51,9 @@ Overview:
        claims is `sub` as `openid` is the only scope required in OpenID Connect for 
        a dynamically registered client.
 
-Minimum Required
+ 5. Person logs out of application: all OpenID Connect tabs in browser are logged out.
 
+Minimum Required
 
  * **JASP_OPENID_RP_REDIRECT_URI** The callback URI for your application, this is where
    the OpenID Connect Provider will send the access token and `id_token`. Even if a client
@@ -61,12 +65,15 @@ Minimum Required
 
 Optional Required
 
- * **JASP_OPENID_REQUESTED_SCOPES** OpenID Connect scopes provide one or more user claims. 
-   Many applications will not work with the username alone (the `sub` claim). The RP can
-   use this property to specify additional required scopes.
+ * **JASP_OPENID_REQUESTED_SCOPES** The RP can use this parameter to request additional 
+   [OpenID Connect scopes](http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims). 
+   Many applications will not work with the username alone (i.e. the OpenID Connect `sub` claim,
+   which is contained in the `openid` scope). 
 
- * **JASP_OPENID_REQUESTED_ACR** An OpenID Connect RP may request a specific type of authentication
-   using the `acr_values` parameter. See the [Authentication Request](http://openid.net/specs/openid-connect-core-1_0.html#AuthRequest) for more details.
+ * **JASP_OPENID_REQUESTED_ACRS** An OpenID Connect RP may request a specific type of authentication
+   using the `acr_values` parameter. See the 
+   [Authentication Request](http://openid.net/specs/openid-connect-core-1_0.html#AuthRequest) 
+   for more details.
 
 
 ##  Relationship from SCIM Client to Server
