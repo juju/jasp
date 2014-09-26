@@ -21,15 +21,15 @@ person at their home domain.  [OpenID Connect API](http://openid.net/connect) is
 of OAuth2 which defines APIs for authentication, discovery, client registration and session 
 management. 
 
-Relationship Name: 
+### Relationship Name: 
 
     *  OPENID-CONNECT
 
-Relationship Direction:
+### Relationship Direction:
 
     *  From RP to OP
 
-Overview of Web Browser Authentication:
+### Overview of Web Browser Authentication:
 
  0. Person hits login button on Website which is the "RP" (Relying Party).
 
@@ -53,7 +53,9 @@ Overview of Web Browser Authentication:
 
  5. Person logs out of application: all OpenID Connect tabs in browser are logged out.
 
-Minimum Required
+### RP Configuration parameters: Minimum Required
+
+The RP 
 
  * **JASP_OPENID_RP_REDIRECT_URI** The callback URI for your application, this is where
    the OpenID Connect Provider will send the access token and `id_token`. Even if a client
@@ -63,7 +65,7 @@ Minimum Required
  * **JASP_OPENID_RP_CLIENT_NAME** This is a more friendly name for your application that 
     would make it easier for the admin at the OP to recognize your application. 
 
-Optional Required
+### Optional Required
 
  * **JASP_OPENID_REQUESTED_SCOPES** The RP can use this parameter to request additional 
    [OpenID Connect scopes](http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims). 
@@ -91,9 +93,9 @@ Token: Client must register SCIM endpoints, and enforce authorized UMA RPT token
 
 RP Sets:
 
-      *     uma_discovery_url **//''REQUIRED''//**
+      * uma_discovery_url **//''REQUIRED''//**
       * scim_discovery_url - where to find the SCIM endpoints, required cryto, and required UMA authorization scopes **//''Required''//**
-      *     connect_discovery_url **//''REQUIRED''//**
+      * connect_discovery_url **//''REQUIRED''//**
       * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
 
 
@@ -120,8 +122,8 @@ in the RPT token presented by the Client.
 
 RP Sets:
 
-      *     uma_discovery_url **//''REQUIRED''//**
-      *     connect_discovery_url **//''REQUIRED''//**
+      * uma_discovery_url **//''REQUIRED''//**
+      * connect_discovery_url **//''REQUIRED''//**
       * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
 
 
@@ -139,8 +141,8 @@ Token: Client must present an authorized RPT token to the RS
 
 RP Sets:
 
-      *     uma_discovery_url **//''REQUIRED''//**
-      *     connect_discovery_url **//''REQUIRED''//**
+      * uma_discovery_url **//''REQUIRED''//**
+      * connect_discovery_url **//''REQUIRED''//**
       * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
 
 
@@ -158,8 +160,8 @@ Token: Client must present AAT token to communicate with AS (obtain RPT, authori
 
 RP Sets:
 
-      *     uma_discovery_url **//''REQUIRED''//**
-      *     connect_discovery_url **//''REQUIRED''//**
+      * uma_discovery_url **//''REQUIRED''//**
+      * connect_discovery_url **//''REQUIRED''//**
       * **connect_redirect_url** - Where to find the application, i.e. ''https://example.com/myFolder/index.html'' **//''REQUIRED''//**
 
 
