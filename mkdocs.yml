@@ -9,4 +9,4 @@ pages:
 
 # Home Page
 - ['index.md', 'Home']
-- ['interop.md', 'Interop']
+- ['./jasp/interop.md', 'Interop']
