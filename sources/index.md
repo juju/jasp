@@ -53,24 +53,24 @@ management.
 
  5. Person logs out of application: all OpenID Connect tabs in browser are logged out.
 
-### RP Configuration parameters: Minimum Required
+### RP Configuration parameters
 
-Required:
+#### Required:
+
+ * **JASP_OPENID_RP_CLIENT_NAME** This is a more friendly name for your application that 
+    would make it easier for the admin at the OP to recognize your application. 
 
  * **JASP_OPENID_RP_REDIRECT_URI** The callback URI for your application, this is where
    the OpenID Connect Provider will send the access token and `id_token`. Even if a client
    can spoof a request, the response from the OP always goes back to the pre-registered
    callback redirect URI.
 
- * **JASP_OPENID_RP_CLIENT_NAME** This is a more friendly name for your application that 
-    would make it easier for the admin at the OP to recognize your application. 
+#### Optional 
 
  * **JASP_OPENID_REQUESTED_SCOPES** The RP can use this parameter to request additional 
    [OpenID Connect scopes](http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims). 
    Many applications will not work with the username alone (i.e. the OpenID Connect `sub` claim,
    which is contained in the `openid` scope). 
-
-### Optional 
 
  * **JASP_OPENID_REQUESTED_ACRS** An OpenID Connect RP may request a specific type of authentication
    using the `acr_values` parameter. See the 
