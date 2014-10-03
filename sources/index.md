@@ -55,7 +55,7 @@ management.
 
 ### RP Configuration parameters: Minimum Required
 
-The RP 
+Required:
 
  * **JASP_OPENID_RP_REDIRECT_URI** The callback URI for your application, this is where
    the OpenID Connect Provider will send the access token and `id_token`. Even if a client
@@ -65,12 +65,12 @@ The RP
  * **JASP_OPENID_RP_CLIENT_NAME** This is a more friendly name for your application that 
     would make it easier for the admin at the OP to recognize your application. 
 
-### Optional Required
-
  * **JASP_OPENID_REQUESTED_SCOPES** The RP can use this parameter to request additional 
    [OpenID Connect scopes](http://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims). 
    Many applications will not work with the username alone (i.e. the OpenID Connect `sub` claim,
    which is contained in the `openid` scope). 
+
+### Optional 
 
  * **JASP_OPENID_REQUESTED_ACRS** An OpenID Connect RP may request a specific type of authentication
    using the `acr_values` parameter. See the 
